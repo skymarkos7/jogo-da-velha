@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jogo da Velha</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="shortcut icon" href="img-velha.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+MX:wght@100..400&family=Playwrite+US+Trad:wght@100..400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 class="txt-title">Jogo da Velha</h1>
+    <div id="board">
+      <div class="cell" onclick="makeMove(0)"></div>
+      <div class="cell" onclick="makeMove(1)"></div>
+      <div class="cell" onclick="makeMove(2)"></div>
+      <div class="cell" onclick="makeMove(3)"></div>
+      <div class="cell" onclick="makeMove(4)"></div>
+      <div class="cell" onclick="makeMove(5)"></div>
+      <div class="cell" onclick="makeMove(6)"></div>
+      <div class="cell" onclick="makeMove(7)"></div>
+      <div class="cell" onclick="makeMove(8)"></div>
+    </div>
+    <div class="btn-container">
+      <button onclick="resetBoard()">Reiniciar</button>
+    </div>
+
+    <script src="script.js"></script>
+  </div>
+</body>
+</html>
+
+<script>
+    let currentPlayer = "X";
+let gameActive = true;
+let gameState = ["", "", "", "", "", "", "", "", ""];
+
+const winningConditions = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
+
+function makeMove(cellIndex) {
+  if (gameState[cellIndex] !== "" || !gameActive) {
+    return;
+  }
+
+  gameState[cellIndex] = currentPlayer;
+  document.getElementsByClassName("cell")[cellIndex].innerText = currentPlayer;
+
+  if (checkForWin()) {
+    document.getElementById("board").style.pointerEvents = "none";
+    alert("O jogador " + currentPlayer + " venceu!");
+    gameActive = false;
+    return;
+  }
+
+  if (checkForDraw()) {
+    document.getElementById("board").style.pointerEvents = "none";
+    alert("Empate!");
+    gameActive = false;
+    return;
+  }
+
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+}
+
+function checkForWin() {
+  for (let i = 0; i < winningConditions.length; i++) {
+    const [a, b, c] = winningConditions[i];
+    if (
+      gameState[a] !== "" &&
+      gameState[a] === gameState[b] &&
+      gameState[a] === gameState[c]
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkForDraw() {
+  return gameState.every(cell => cell !== "");
+}
+
+function resetBoard() {
+  currentPlayer = "X";
+  gameActive = true;
+  gameState = ["", "", "", "", "", "", "", "", ""];
+  document.getElementById("board").style.pointerEvents = "auto";
+  document.querySelectorAll(".cell").forEach(cell => (cell.innerText = ""));
+}
+
+</script>
+
+
+
+
+
+<style>
+body {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+}
+
+.txt-title {
+  display: flex;
+  justify-content: center;
+
+  font-family: "Playwrite MX", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+/* .playwrite-mx-<uniquifier> {
+  font-family: "Playwrite MX", cursive;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+} */
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  width: 300px;
+  margin-bottom: 10px;
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  color: #333;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+}
+
+.cell:hover {
+  background-color: #e0e0e0;
+}
+
+.cell.X {
+  color: #ff0000;
+}
+
+.cell.O {
+  color: #0000ff;
+}
+
+button {
+  font-size: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+</style>
